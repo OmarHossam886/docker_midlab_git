@@ -1,0 +1,77 @@
+image: docker:27
+
+services:
+  - name: docker:27-dind
+    command: ["--tls=false"]
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+  TAG: $CI_COMMIT_SHORT_SHA
+
+stages:
+  - deps
+  - build
+  - push
+  - deploy
+  - test
+
+# ---------------------
+# Stage 1: Dependencies
+# ---------------------
+deps:
+  stage: deps
+  script:
+    - docker version
+    - docker compose version
+    - docker compose config
+
+# ---------------------
+# Stage 2: Build Images
+# ---------------------
+build:
+  stage: build
+  script:
+    - docker build -t $DOCKERHUB_USERNAME/vote:$TAG -t $DOCKERHUB_USERNAME/vote:latest vote/
+    - docker build -t $DOCKERHUB_USERNAME/result:$TAG -t $DOCKERHUB_USERNAME/result:latest result/
+    - docker build -t $DOCKERHUB_USERNAME/worker:$TAG -t $DOCKERHUB_USERNAME/worker:latest worker/
+
+# ---------------------
+# Stage 3: Push Images
+# ---------------------
+push:
+  stage: push
+  script:
+    - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+    - docker push $DOCKERHUB_USERNAME/vote
+    - docker push $DOCKERHUB_USERNAME/result
+    - docker push $DOCKERHUB_USERNAME/worker
+
+# ---------------------
+# Stage 4: Deploy
+# ---------------------
+deploy:
+  stage: deploy
+  before_script:
+    - apk add --no-cache openssh
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan $SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - ssh ubuntu@$SERVER_IP "
+        docker pull $DOCKERHUB_USERNAME/vote:latest &&
+        docker pull $DOCKERHUB_USERNAME/result:latest &&
+        docker pull $DOCKERHUB_USERNAME/worker:latest &&
+        docker compose up -d
+      "
+
+# ---------------------
+# Stage 5: Smoke Test
+# ---------------------
+smoke_test:
+  stage: test
+  script:
+    - apk add --no-cache curl
+    - curl -f http://$SERVER_IP:8080
+    - curl -f http://$SERVER_IP:8081

@@ -1,0 +1,13 @@
+services:
+  vote:
+    image: omarhossam886/vote:latest
+    ports:
+      - "8080:80"
+
+  result:
+    image: omarhossam886/result:latest
+    ports:
+      - "8081:80"
+
+  worker:
+    image: omarhossam886/worker:latest
