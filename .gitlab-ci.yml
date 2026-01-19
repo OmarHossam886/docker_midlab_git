@@ -57,9 +57,9 @@ deploy:
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan $SERVER_IP >> ~/.ssh/known_hosts
+    - ssh-keyscan $DEPLOY_SERVER_HOST >> ~/.ssh/known_hosts
   script:
-    - ssh ubuntu@$SERVER_IP "
+    - ssh ubuntu@$DEPLOY_SERVER_HOST "
         docker pull $DOCKERHUB_USERNAME/vote:latest &&
         docker pull $DOCKERHUB_USERNAME/result:latest &&
         docker pull $DOCKERHUB_USERNAME/worker:latest &&
@@ -73,5 +73,5 @@ smoke_test:
   stage: test
   script:
     - apk add --no-cache curl
-    - curl -f http://$SERVER_IP:8080
-    - curl -f http://$SERVER_IP:8081
+    - curl -f http://$DEPLOY_SERVER_HOST:8080
+    - curl -f http://$DEPLOY_SERVER_HOST:8081
