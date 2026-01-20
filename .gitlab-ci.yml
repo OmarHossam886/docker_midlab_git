@@ -43,9 +43,9 @@ push:
   stage: push
   script:
     - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-    - docker push $DOCKERHUB_USERNAME/vote
-    - docker push $DOCKERHUB_USERNAME/result
-    # - docker push $DOCKERHUB_USERNAME/worker
+    - docker push $DOCKERHUB_USERNAME/vote:$TAG
+    - docker push $DOCKERHUB_USERNAME/result:$TAG
+    # - docker push $DOCKERHUB_USERNAME/worker:$TAG
 
 # ---------------------
 # Stage 4: Deploy
