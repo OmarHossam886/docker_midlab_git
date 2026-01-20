@@ -32,7 +32,8 @@ deps:
 build:
   stage: build
   script:
-    - docker build -t $DOCKERHUB_USERNAME/vote:$TAG -t $DOCKERHUB_USERNAME/vote:latest ./vote
+    - docker build -t $DOCKERHUB_USERNAME/vote:$TAG ./vote
+    - docker tag $DOCKERHUB_USERNAME/vote:$TAG $DOCKERHUB_USERNAME/vote:latest
     - docker build -t $DOCKERHUB_USERNAME/result:$TAG -t $DOCKERHUB_USERNAME/result:latest ./result
     # - docker build -t $DOCKERHUB_USERNAME/worker:$TAG -t $DOCKERHUB_USERNAME/worker:latest worker/
 
@@ -44,6 +45,7 @@ push:
   script:
     - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
     - docker push $DOCKERHUB_USERNAME/vote:$TAG
+    - docker push $DOCKERHUB_USERNAME/vote:latest
     - docker push $DOCKERHUB_USERNAME/result:$TAG
     # - docker push $DOCKERHUB_USERNAME/worker:$TAG
 
