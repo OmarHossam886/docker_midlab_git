@@ -2,11 +2,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 
 WORKDIR /docker_midlab
-
-COPY worker.csproj . 
-RUN dotnet restore 
-
 COPY . .
+
 RUN dotnet publish /worker/worker.csproj -c Release -o /app
 
 # Runtime stage
