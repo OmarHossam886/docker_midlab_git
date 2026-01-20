@@ -1,6 +1,6 @@
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /src
+WORKDIR /docker_midlab/worker
 COPY . .
 
 RUN dotnet publish worker/worker.csproj -c Release -o /app
