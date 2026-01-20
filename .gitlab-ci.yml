@@ -32,8 +32,8 @@ deps:
 build:
   stage: build
   script:
-    - docker build -t $DOCKERHUB_USERNAME/vote:$TAG -t $DOCKERHUB_USERNAME/vote:latest /vote
-    - docker build -t $DOCKERHUB_USERNAME/result:$TAG -t $DOCKERHUB_USERNAME/result:latest /result
+    - docker build -t $DOCKERHUB_USERNAME/vote:$TAG -t $DOCKERHUB_USERNAME/vote:latest ./vote
+    - docker build -t $DOCKERHUB_USERNAME/result:$TAG -t $DOCKERHUB_USERNAME/result:latest ./result
     # - docker build -t $DOCKERHUB_USERNAME/worker:$TAG -t $DOCKERHUB_USERNAME/worker:latest worker/
 
 # ---------------------
