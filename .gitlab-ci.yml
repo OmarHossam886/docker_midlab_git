@@ -34,7 +34,8 @@ build:
   script:
     - docker build -t $DOCKERHUB_USERNAME/vote:$TAG ./vote
     - docker tag $DOCKERHUB_USERNAME/vote:$TAG $DOCKERHUB_USERNAME/vote:latest
-    - docker build -t $DOCKERHUB_USERNAME/result:$TAG -t $DOCKERHUB_USERNAME/result:latest ./result
+    - docker build -t $DOCKERHUB_USERNAME/result:$TAG ./result
+    - docker tag $DOCKERHUB_USERNAME/result:$TAG $DOCKERHUB_USERNAME/result:latest
     # - docker build -t $DOCKERHUB_USERNAME/worker:$TAG -t $DOCKERHUB_USERNAME/worker:latest worker/
 
 # ---------------------
@@ -47,6 +48,7 @@ push:
     - docker push $DOCKERHUB_USERNAME/vote:$TAG
     - docker push $DOCKERHUB_USERNAME/vote:latest
     - docker push $DOCKERHUB_USERNAME/result:$TAG
+    - docker push $DOCKERHUB_USERNAME/result:latest
     # - docker push $DOCKERHUB_USERNAME/worker:$TAG
 
 # ---------------------
