@@ -56,13 +56,14 @@ build_push:
 # Stage 4: Trivy Scan
 # ------------------------
 trivy_scan:
-  stage: security
+  stage: scan
   image: aquasec/trivy:latest
   script:
     - trivy image --severity HIGH,CRITICAL --no-progress $DOCKERHUB_USERNAME/vote:latest
     - trivy image --severity HIGH,CRITICAL --no-progress $DOCKERHUB_USERNAME/result:latest
     - trivy image --severity HIGH,CRITICAL --no-progress $DOCKERHUB_USERNAME/worker:latest
   allow_failure: true
+
 # ------------------------
 # Stage 5: Deploy (SSH)
 # ------------------------
