@@ -77,11 +77,11 @@ deploy:
   stage: deploy
   image: alpine:latest
   before_script:
-    - apk add --no-cache openssh
-    - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan $DEPLOY_SERVER_HOST >> ~/.ssh/known_hosts
+  - apk add --no-cache openssh
+  - mkdir -p ~/.ssh
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+  - ssh-keyscan -H "$DEPLOY_SERVER_HOST" >> ~/.ssh/known_hosts
   script:
     - ssh $DEPLOY_USER@$DEPLOY_SERVER_HOST "
         docker pull $DOCKERHUB_USERNAME/vote:latest &&
