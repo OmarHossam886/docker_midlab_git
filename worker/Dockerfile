@@ -11,4 +11,4 @@ FROM mcr.microsoft.com/dotnet/runtime:7.0
 WORKDIR /docker_midlab
 COPY --from=build /docker_midlab .
 
-ENTRYPOINT ["dotnet", "worker.dll"]
+ENTRYPOINT ["dotnet", "Worker.dll"]
