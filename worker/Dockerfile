@@ -1,14 +1,18 @@
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /src
 
-WORKDIR /docker_midlab
+# copy csproj and restore
+COPY Worker.csproj .
+RUN dotnet restore
+
+# copy everything else and publish
 COPY . .
-
-RUN dotnet publish /worker/Worker.csproj -c Release -o /app
+RUN dotnet publish Worker.csproj -c Release -o /app
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/runtime:7.0
-WORKDIR /docker_midlab
-COPY --from=build /docker_midlab .
+WORKDIR /app
+COPY --from=build /app .
 
 ENTRYPOINT ["dotnet", "Worker.dll"]
