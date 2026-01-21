@@ -57,11 +57,11 @@ build_push:
 # ------------------------
 trivy_scan:
   stage: scan
-  image: aquasec/trivy:latest
+  image: alpine:3.19
   script:
-    - trivy image --severity HIGH,CRITICAL --no-progress $DOCKERHUB_USERNAME/vote:latest
-    - trivy image --severity HIGH,CRITICAL --no-progress $DOCKERHUB_USERNAME/result:latest
-    - trivy image --severity HIGH,CRITICAL --no-progress $DOCKERHUB_USERNAME/worker:latest
+    - apk add --no-cache curl
+    - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+    - ./bin/trivy image --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/vote:latest
   allow_failure: true
 
 # ------------------------
