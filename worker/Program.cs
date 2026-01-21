@@ -2,34 +2,31 @@ using System;
 using Npgsql;
 using StackExchange.Redis;
 
-class Worker
+class Program
 {
     static void Main()
     {
+        Console.WriteLine("Worker service started...");
+
         var redis = ConnectionMultiplexer.Connect("redis");
         var db = redis.GetDatabase();
 
-        var conn = new NpgsqlConnection(
+        using var conn = new NpgsqlConnection(
             "Host=db;Username=postgres;Password=postgres;Database=postgres"
         );
-        conn.Open();
 
-        Console.WriteLine("Worker started...");
+        conn.Open();
+        Console.WriteLine("Connected to PostgreSQL");
 
         while (true)
         {
             var vote = db.ListLeftPop("votes");
-
-            if (!vote.IsNull)
+            if (vote.HasValue)
             {
-                using var cmd = new NpgsqlCommand(
-                    "INSERT INTO votes(vote) VALUES (@vote)", conn
-                );
-                cmd.Parameters.AddWithValue("vote", vote.ToString());
-                cmd.ExecuteNonQuery();
-
-                Console.WriteLine($"Processed vote: {vote}");
+                Console.WriteLine($"Processing vote: {vote}");
             }
+
+            System.Threading.Thread.Sleep(1000);
         }
     }
 }
