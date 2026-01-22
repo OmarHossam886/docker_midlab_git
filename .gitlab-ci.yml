@@ -46,7 +46,7 @@ build_push:
     - docker push $DOCKERHUB_USERNAME/result:$TAG
     - docker push $DOCKERHUB_USERNAME/result:latest
 
-    # Worker
+    
     - docker build -t $DOCKERHUB_USERNAME/worker:$TAG ./worker
     - docker tag $DOCKERHUB_USERNAME/worker:$TAG $DOCKERHUB_USERNAME/worker:latest
     - docker push $DOCKERHUB_USERNAME/worker:$TAG
