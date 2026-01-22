@@ -81,7 +81,6 @@ deploy:
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan $DEPLOY_SERVERHOST >> ~/.ssh/known_hosts
   script:
     - ssh omar@$DEPLOY_SERVERHOST "
         docker pull $DOCKERHUB_USERNAME/vote:latest &&
