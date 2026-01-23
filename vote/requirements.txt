@@ -1,18 +1,4 @@
 Flask
 Redis
 
-sudo docker run -d --name gitlab-runner --restart always \
-   -v /home/omar/gitlab-runner/config:/etc/gitlab-runner/config.toml \
-   gitlab/gitlab-runner:latest
-
-   sudo docker run -d --name gitlab-runner --restart always \
-  -v ~/gitlab-runner/config:/etc/gitlab-runner/config.tom \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  gitlab/gitlab-runner:latest
-
-sudo docker run -d --name gitlab-runner --restart always \
-  -v $(pwd)/config:/etc/gitlab-runner/config \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  gitlab/gitlab-runner:latest
-
 
