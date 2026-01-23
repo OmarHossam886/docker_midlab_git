@@ -87,8 +87,11 @@ deploy:
 # Stage 6: Smoke Test
 # ------------------------
 smoke_test:
-  stage: smoke
+  stage: smoke_test
   image: curlimages/curl
   script:
+    - echo "Checking Vote service..."
     - curl -f http://$DEPLOY_HOST:8080
+
+    - echo "Checking Result service..."
     - curl -f http://$DEPLOY_HOST:8081
