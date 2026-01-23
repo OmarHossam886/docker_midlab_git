@@ -87,7 +87,7 @@ deploy:
 # Stage 6: Smoke Test
 # ------------------------
 smoke_test:
-  stage: smoke_test
+  stage: smoke
   image: curlimages/curl
   script:
     - echo "Checking Vote service..."
