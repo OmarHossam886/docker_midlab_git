@@ -1,5 +1,9 @@
-FROM python:3.9
+FROM node:20-alpine
+
 WORKDIR /app
-RUN pip install flask redis
-COPY . .
-CMD ["python", "app.py"]
+COPY server.js .
+
+RUN npm install express redis
+
+EXPOSE 80
+CMD ["node", "server.js"]

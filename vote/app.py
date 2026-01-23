@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, request, redirect
 import redis
 import os
 import socket
@@ -7,8 +7,7 @@ app = Flask(__name__)
 
 # Redis connection
 redis_host = os.getenv("REDIS_HOST", "redis")
-redis_port = 6379
-r = redis.Redis(host=redis_host, port=redis_port)
+r = redis.Redis(host=redis_host, port=6379)
 
 option_a = os.getenv("OPTION_A", "Cats")
 option_b = os.getenv("OPTION_B", "Dogs")
