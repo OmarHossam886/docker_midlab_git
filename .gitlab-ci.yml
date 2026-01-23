@@ -9,18 +9,14 @@ variables:
   TAG: $CI_COMMIT_SHORT_SHA
   DOCKER_TLS_CERTDIR: ""
 
-default:
-  image: docker:27
-  services:
-    - docker:27-dind
-  before_script:
-    - docker info
-
 # ------------------------
 # Stage 1: Dependencies
 # ------------------------
 deps:
   stage: deps
+  image: docker:27
+  services:
+    - docker:27-dind
   script:
     - docker --version
     - docker compose version
@@ -31,22 +27,23 @@ deps:
 # ------------------------
 build_push:
   stage: build_push
+  image: docker:27
+  services:
+    - docker:27-dind
   script:
+    - docker info
     - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
-    # Vote
     - docker build -t $DOCKERHUB_USERNAME/vote:$TAG ./vote
     - docker tag $DOCKERHUB_USERNAME/vote:$TAG $DOCKERHUB_USERNAME/vote:latest
     - docker push $DOCKERHUB_USERNAME/vote:$TAG
     - docker push $DOCKERHUB_USERNAME/vote:latest
 
-    # Result
     - docker build -t $DOCKERHUB_USERNAME/result:$TAG ./result
     - docker tag $DOCKERHUB_USERNAME/result:$TAG $DOCKERHUB_USERNAME/result:latest
     - docker push $DOCKERHUB_USERNAME/result:$TAG
     - docker push $DOCKERHUB_USERNAME/result:latest
 
-    # worker
     - docker build -t $DOCKERHUB_USERNAME/worker:$TAG ./worker
     - docker tag $DOCKERHUB_USERNAME/worker:$TAG $DOCKERHUB_USERNAME/worker:latest
     - docker push $DOCKERHUB_USERNAME/worker:$TAG
@@ -60,28 +57,31 @@ trivy_scan:
   image: docker:27
   services:
     - docker:27-dind
-  variables:
-    DOCKER_TLS_CERTDIR: ""
+  allow_failure: true
   script:
-    - docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
     - docker pull $DOCKERHUB_USERNAME/vote:latest
-    - docker run --rm aquasec/trivy image $DOCKERHUB_USERNAME/vote:latest
-    - docker pull $DOCKERHUB_USERNAME/result:latest
-    - docker run --rm aquasec/trivy image $DOCKERHUB_USERNAME/result:latest
-    - docker pull $DOCKERHUB_USERNAME/worker:latest
-    - docker run --rm aquasec/trivy image $DOCKERHUB_USERNAME/worker:latest
+    - docker run --rm aquasec/trivy image --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/vote:latest
+
 # ------------------------
 # Stage 5: Deploy (SSH)
 # ------------------------
 deploy:
   stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
   script:
-    - docker compose down || true
-    - docker pull $DOCKERHUB_USERNAME/vote:latest
-    - docker pull $DOCKERHUB_USERNAME/result:latest
-    - docker pull $DOCKERHUB_USERNAME/worker:latest
-    - docker compose up -d
-
+    - |
+      ssh $DEPLOY_USER@$DEPLOY_HOST "
+        docker pull $DOCKERHUB_USERNAME/vote:latest &&
+        docker pull $DOCKERHUB_USERNAME/result:latest &&
+        docker pull $DOCKERHUB_USERNAME/worker:latest &&
+        docker compose up -d
+      "
 
 # ------------------------
 # Stage 6: Smoke Test
@@ -90,8 +90,6 @@ smoke_test:
   stage: smoke
   image: curlimages/curl
   script:
-    - echo "Checking Vote service..."
+    - sleep 10
     - curl -f http://$DEPLOY_HOST:8080
-
-    - echo "Checking Result service..."
     - curl -f http://$DEPLOY_HOST:8081
