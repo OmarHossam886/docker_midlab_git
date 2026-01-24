@@ -1,28 +1,19 @@
 services:
   vote:
-    image: omarhossam886/vote:latest
+    image: DOCKERHUB_USERNAME/vote:latest
     ports:
       - "8080:80"
-    depends_on:
-      - redis
 
   result:
-    image: omarhossam886/result:latest
+    image: DOCKERHUB_USERNAME/result:latest
     ports:
       - "8081:80"
-    depends_on:
-      - db
 
   worker:
-    image: omarhossam886/worker:latest
-    depends_on:
-      - redis
-      - db
+    image: DOCKERHUB_USERNAME/worker:latest
 
   redis:
     image: redis:alpine
 
   db:
     image: postgres:15
-    environment:
-      POSTGRES_PASSWORD: postgres
