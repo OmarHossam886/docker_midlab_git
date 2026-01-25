@@ -6,7 +6,7 @@ services:
 variables:
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: ""
-  export IMAGE_TAG: $CI_COMMIT_SHA
+  TAG: $CI_COMMIT_SHA
   DOCKER_HOST: tcp://docker:2375
 
 stages:
@@ -33,9 +33,9 @@ build:
   stage: build
   script:
     - docker-compose build
-    - docker tag $DOCKERHUB_USERNAME/vote:latest $DOCKERHUB_USERNAME/vote:$IMAGE_TAG
-    - docker tag $DOCKERHUB_USERNAME/result:latest $DOCKERHUB_USERNAME/result:$IMAGE_TAG
-    - docker tag $DOCKERHUB_USERNAME/worker:latest $DOCKERHUB_USERNAME/worker:$IMAGE_TAG
+    - docker tag $DOCKERHUB_USERNAME/vote:latest $DOCKERHUB_USERNAME/vote:$TAG
+    - docker tag $DOCKERHUB_USERNAME/result:latest $DOCKERHUB_USERNAME/result:$TAG
+    - docker tag $DOCKERHUB_USERNAME/worker:latest $DOCKERHUB_USERNAME/worker:$TAG
     
   only:
     - main
@@ -44,11 +44,11 @@ push:
   stage: push
   script:
     - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-    - docker push $DOCKERHUB_USERNAME/vote:$IMAGE_TAG
+    - docker push $DOCKERHUB_USERNAME/vote:$TAG
     - docker push $DOCKERHUB_USERNAME/vote:latest
-    - docker push $DOCKERHUB_USERNAME/result:$IMAGE_TAG
+    - docker push $DOCKERHUB_USERNAME/result:$TAG
     - docker push $DOCKERHUB_USERNAME/result:latest
-    - docker push $DOCKERHUB_USERNAME/worker:$IMAGE_TAG
+    - docker push $DOCKERHUB_USERNAME/worker:$TAG
     - docker push $DOCKERHUB_USERNAME/worker:latest
   only:
     - main
@@ -57,9 +57,9 @@ scan:
   image: aquasec/trivy:latest
   allow_failure: true
   script:
-    - trivy image --exit-code 0 --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/vote:$IMAGE_TAG
-    - trivy image --exit-code 0 --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/result:$IMAGE_TAG
-    - trivy image --exit-code 0 --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/worker:$IMAGE_TAG
+    - trivy image --exit-code 0 --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/vote:$TAG
+    - trivy image --exit-code 0 --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/result:$TAG
+    - trivy image --exit-code 0 --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/worker:$TAG
   only:
     - main
 
