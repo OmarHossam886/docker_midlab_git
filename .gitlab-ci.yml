@@ -38,7 +38,7 @@ build:
     - docker tag $DOCKERHUB_USERNAME/worker:latest $DOCKERHUB_USERNAME/worker:$IMAGE_TAG
   only:
     - main
-
+#
 push:
   stage: push
   script:
