@@ -36,6 +36,7 @@ build:
     - docker tag $DOCKERHUB_USERNAME/vote:latest $DOCKERHUB_USERNAME/vote:$IMAGE_TAG
     - docker tag $DOCKERHUB_USERNAME/result:latest $DOCKERHUB_USERNAME/result:$IMAGE_TAG
     - docker tag $DOCKERHUB_USERNAME/worker:latest $DOCKERHUB_USERNAME/worker:$IMAGE_TAG
+    
   only:
     - main
 
