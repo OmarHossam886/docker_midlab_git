@@ -33,28 +33,24 @@ build:
   stage: build
   script:
     - docker-compose build
-    - docker tag example-voting-app_vote:latest $DOCKERHUB_USERNAME/vote:$IMAGE_TAG
-    - docker tag example-voting-app_vote:latest $DOCKERHUB_USERNAME/vote:latest
-    - docker tag example-voting-app_result:latest $DOCKERHUB_USERNAME/result:$IMAGE_TAG
-    - docker tag example-voting-app_result:latest $DOCKERHUB_USERNAME/result:latest
-    - docker tag example-voting-app_worker:latest $DOCKERHUB_USERNAME/worker:$IMAGE_TAG
-    - docker tag example-voting-app_worker:latest $DOCKERHUB_USERNAME/worker:latest
+    - docker tag $DOCKERHUB_USERNAME/vote:latest $DOCKERHUB_USERNAME/vote:$IMAGE_TAG
+    - docker tag $DOCKERHUB_USERNAME/result:latest $DOCKERHUB_USERNAME/result:$IMAGE_TAG
+    - docker tag $DOCKERHUB_USERNAME/worker:latest $DOCKERHUB_USERNAME/worker:$IMAGE_TAG
   only:
     - main
 
 push:
   stage: push
   script:
-    - echo "$DOCKERHUB_PASSWORDD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-    - docker push $DOCKERHUB_USERNAME/vote:$IMAGE_TAG
-    - docker push $DOCKERHUB_USERNAME/vote:latest
-    - docker push $DOCKERHUB_USERNAME/result:$IMAGE_TAG
-    - docker push $DOCKERHUB_USERNAME/result:latest
-    - docker push $DOCKERHUB_USERNAME/worker:$IMAGE_TAG
-    - docker push $DOCKERHUB_USERNAME/worker:latest
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+    - docker push $DOCKER_USER/vote:$IMAGE_TAG
+    - docker push $DOCKER_USER/vote:latest
+    - docker push $DOCKER_USER/result:$IMAGE_TAG
+    - docker push $DOCKER_USER/result:latest
+    - docker push $DOCKER_USER/worker:$IMAGE_TAG
+    - docker push $DOCKER_USER/worker:latest
   only:
     - main
-
 scan:
   stage: scan
   image: aquasec/trivy:latest
