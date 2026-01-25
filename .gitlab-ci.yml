@@ -50,9 +50,9 @@ build_push:
     - docker push $DOCKERHUB_USERNAME/worker:$TAG
     - docker push $DOCKERHUB_USERNAME/worker:latest
 
-# -----------------------
+# ------------------------
 # Stage 4: Trivy Scan
-# -----------------------
+# ------------------------
 trivy_scan:
   stage: scan
   image: docker:27
@@ -73,8 +73,6 @@ trivy_scan:
 # ------------------------
 deploy:
   stage: deploy
-  tags:
-    - deploy
   script:
     - docker compose down || true
     - docker pull $DOCKERHUB_USERNAME/vote:latest
@@ -90,5 +88,5 @@ smoke_test:
   image: curlimages/curl
   script:
     - sleep 20
-    - curl -f http://$DEPLOY_HOST:8083
-    - curl -f http://$DEPLOY_HOST:8082
+    - curl -f http://$DEPLOY_HOST:8080
+    - curl -f http://$DEPLOY_HOST:8081
