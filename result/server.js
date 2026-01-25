@@ -5,9 +5,12 @@ const app = express();
 
 const pool = new Pool({
   host: process.env.DB_HOST || "db",
-  user: "postgres",
-  password: "postgres",
-  database: "postgres"
+  user: process.env.POSTGRES_USER || "postgres",
+  password: process.env.POSTGRES_PASSWORD || "postgres",
+  database: process.env.POSTGRES_DB || "postgres",
+  port: 5432,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000
 });
 
 app.get("/", async (req, res) => {
@@ -24,6 +27,7 @@ app.get("/", async (req, res) => {
 
     res.send(html);
   } catch (err) {
+    console.error("DB error:", err.message);
     res.status(500).send("Database error");
   }
 });

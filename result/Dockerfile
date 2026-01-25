@@ -1,8 +1,11 @@
 FROM node:20-alpine
 
 WORKDIR /app
-COPY server.js .
 
-RUN npm install express redis
+COPY package*.json ./
+RUN npm install --production
 
-CMD ["node", "server.js"]
+COPY . .
+
+EXPOSE 80
+CMD ["npm", "start"]
