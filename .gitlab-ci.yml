@@ -49,7 +49,7 @@ push:
     - docker push $DOCKERHUB_USERNAME/result:$IMAGE_TAG
     - docker push $DOCKERHUB_USERNAME/worker:latest
     - docker push $DOCKERHUB_USERNAME/worker:$IMAGE_TAG
-    
+
 scan:
   stage: scan
   image: aquasec/trivy:latest
