@@ -42,7 +42,7 @@ build:
 push:
   stage: push
   script:
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+    - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
     - docker push $DOCKERHUB_USERNAME/vote:$IMAGE_TAG
     - docker push $DOCKERHUB_USERNAME/vote:latest
     - docker push $DOCKERHUB_USERNAME/result:$IMAGE_TAG
