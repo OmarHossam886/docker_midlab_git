@@ -73,12 +73,21 @@ trivy_scan:
 # ------------------------
 deploy:
   stage: deploy
+  image: alpine
+  before_script:
+    - apk add --no-cache openssh
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
   script:
-    - docker compose down || true
-    - docker pull $DOCKERHUB_USERNAME/vote:deploy
-    - docker pull $DOCKERHUB_USERNAME/result:deploy
-    - docker pull $DOCKERHUB_USERNAME/worker:deploy
-    - docker compose up -d
+    - ssh $DEPLOY_USER@$DEPLOY_HOST "
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD &&
+        docker pull $DOCKER_USER/vote:latest &&
+        docker pull $DOCKER_USER/result:latest &&
+        docker pull $DOCKER_USER/worker:latest &&
+        docker compose up -d
+      "
 
 # ------------------------
 # Stage 6: Smoke Test
