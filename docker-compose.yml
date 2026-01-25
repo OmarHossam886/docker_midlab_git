@@ -1,6 +1,6 @@
 services:
   vote:
-    image: ${DOCKER_USER}/vote
+    image: ${DOCKERHUB_USERNAME}/vote
     build:
       context: ./vote
       target: dev
@@ -22,7 +22,7 @@ services:
       - back-tier
 
   result:
-    image: ${DOCKER_USER}/result
+    image: ${DOCKERHUB_USERNAME}/result
     build: ./result
     entrypoint: nodemon --inspect=0.0.0.0 server.js
     depends_on:
@@ -38,7 +38,7 @@ services:
       - back-tier
 
   worker:
-    image: ${DOCKER_USER}/worker
+    image: ${DOCKERHUB_USERNAME}/worker
     build:
       context: ./worker
     depends_on:
