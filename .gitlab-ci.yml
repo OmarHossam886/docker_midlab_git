@@ -74,9 +74,7 @@ trivy_scan:
 deploy:
   stage: deploy
   tags:
-    - $DOCKERHUB_USERNAME/vote:latest
-    - $DOCKERHUB_USERNAME/result:latest
-    - $DOCKERHUB_USERNAME/worker:latest
+    - deploy
   script:
     - docker compose down || true
     - docker pull $DOCKERHUB_USERNAME/vote:latest
