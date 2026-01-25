@@ -49,7 +49,7 @@ push:
     - docker push $DOCKERHUB_USERNAME/result:$IMAGE_TAG
     - docker push $DOCKERHUB_USERNAME/worker:latest
     - docker push $DOCKERHUB_USERNAME/worker:$IMAGE_TAG
-    
+
 scan:
   stage: scan
   image: aquasec/trivy:latest
@@ -63,18 +63,21 @@ scan:
 
 deploy:
   stage: deploy
-  script:
+  image: alpine
+  before_script:
+    - apk add --no-cache openssh
     - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
-    # Option A: GitOps style
-    - ssh $DEPLOY_USER@$DEPLOY_HOST "cd example-voting-app || git clone https://gitlab.com/<your-namespace>/<your-repo>.git example-voting-app; cd example-voting-app; git pull; docker-compose pull; docker-compose up -d"
-    # Option B: Ansible (uncomment if using Ansible)
-    # - apk add --no-cache ansible
-    # - ansible-playbook -i inventory.ini deploy.yml
-  only:
-    - main
+    - ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
+  script:
+    - ssh $DEPLOY_USER@$DEPLOY_HOST "
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD &&
+        docker pull $DOCKER_USER/vote:latest &&
+        docker pull $DOCKER_USER/result:latest &&
+        docker pull $DOCKER_USER/worker:latest &&
+        docker compose up -d
+      "
 
 smoke:
   stage: smoke
