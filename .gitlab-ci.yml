@@ -50,9 +50,9 @@ build_push:
     - docker push $DOCKERHUB_USERNAME/worker:$TAG
     - docker push $DOCKERHUB_USERNAME/worker:latest
 
-# ------------------------
+# -----------------------
 # Stage 4: Trivy Scan
-# ------------------------
+# -----------------------
 trivy_scan:
   stage: scan
   image: docker:27
