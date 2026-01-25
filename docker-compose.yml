@@ -9,7 +9,7 @@ services:
   result:
     image: omarhossam886/result:latest
     ports:
-      - "8081:80"
+      - "8082:80"
     depends_on:
       - db
   worker:
