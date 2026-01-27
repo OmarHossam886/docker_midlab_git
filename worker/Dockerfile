@@ -4,7 +4,7 @@ ARG TARGETARCH
 ARG BUILDPLATFORM
 RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM"
 
-WORKDIR /app
+WORKDIR /docker_midlab/worker
 COPY . .
 
 RUN dotnet clean
@@ -13,6 +13,6 @@ RUN dotnet publish -c release -o /out -r linux-x64 --self-contained false --no-r
 
 # app image
 FROM mcr.microsoft.com/dotnet/runtime:7.0
-WORKDIR /app
+WORKDIR /docker_midlab/worker
 COPY --from=build /out .
 ENTRYPOINT ["dotnet", "Worker.dll"]
