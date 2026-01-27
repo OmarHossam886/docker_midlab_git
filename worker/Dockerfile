@@ -1,18 +1,13 @@
-FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/dotnet/sdk:10.0 AS build
-ARG TARGETPLATFORM
-ARG TARGETARCH
-ARG BUILDPLATFORM
-RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM"
-
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /source
-COPY *.csproj .
-RUN dotnet restore -a $TARGETARCH
+
+COPY *.csproj ./
+RUN dotnet restore
 
 COPY . .
-RUN dotnet publish -c release -o /app -a $TARGETARCH --self-contained false --no-restore
+RUN dotnet publish -c Release -o /app
 
-# app image
-FROM mcr.microsoft.com/dotnet/runtime:10.0
+FROM mcr.microsoft.com/dotnet/runtime:8.0
 WORKDIR /app
 COPY --from=build /app .
 ENTRYPOINT ["dotnet", "Worker.dll"]
