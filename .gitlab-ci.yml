@@ -46,6 +46,7 @@ build:
     - main
 
 push:
+  image: docker:latest
   tags:
     - deploy1
   stage: push
