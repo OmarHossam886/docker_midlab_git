@@ -75,9 +75,8 @@ trivy_scan:
   image: aquasec/trivy:latest
   services:
     - docker:dind
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
+  tags:
+    - deploy1
   script:
     - trivy image --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/vote:latest
     - trivy image --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/result:latest
