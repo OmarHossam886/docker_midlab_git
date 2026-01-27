@@ -70,17 +70,16 @@ build_push:
     - docker push $DOCKERHUB_USERNAME/worker:latest
     - docker push $DOCKERHUB_USERNAME/worker:$IMAGE_TAG
 
-
 scan:
-  tags:
+  image: aquasec/trivy:latest
+  tags:  
     - deploy1
   stage: scan
-  image: aquasec/trivy:latest
-  allow_failure: true
   script:
-    - trivy image --exit-code 0 --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/vote:$IMAGE_TAG
-    - trivy image --exit-code 0 --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/result:$IMAGE_TAG
-    - trivy image --exit-code 0 --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/worker:$IMAGE_TAG
+    - trivy image --exit-code 0 --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/vote:latest
+    - trivy image --exit-code 0 --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/result:latest
+    - trivy image --exit-code 0 --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/worker:latest
+  allow_failure: true
   only:
     - main
 
