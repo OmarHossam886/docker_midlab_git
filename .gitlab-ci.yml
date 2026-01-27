@@ -21,6 +21,8 @@ before_script:
   - apk add --no-cache docker-compose openssh-client
 
 deps:
+  tags:
+    - deploy1
   stage: deps
   script:
     - docker --version
@@ -30,6 +32,8 @@ deps:
     - main
 
 build:
+  tags:
+    - deploy1
   stage: build
   script:
     - docker-compose build
@@ -40,6 +44,8 @@ build:
     - main
 
 push:
+  tags:
+    - deploy1
   stage: push
   script:
     - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
@@ -51,6 +57,8 @@ push:
     - docker push $DOCKERHUB_USERNAME/worker:$IMAGE_TAG
 
 scan:
+  tags:
+    - deploy1
   stage: scan
   image: aquasec/trivy:latest
   allow_failure: true
@@ -62,6 +70,8 @@ scan:
     - main
 
 deploy:
+  tags:
+    - deploy1
   stage: deploy
   image: alpine
   before_script:
@@ -80,6 +90,8 @@ deploy:
       "
 
 smoke:
+  tags:
+    - deploy1
   stage: smoke
   image: curlimages/curl:latest
   script:
