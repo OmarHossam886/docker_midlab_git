@@ -28,7 +28,7 @@ namespace Worker
                 var definition = new { vote = "", voter_id = "" };
                 while (true)
                 {
-                    // Slow down to prevent CPU spike, only query each 100ms
+                    // Slow down to prevent CPU spike, only query each 100m
                     Thread.Sleep(100);
 
                     // Reconnect redis if down
