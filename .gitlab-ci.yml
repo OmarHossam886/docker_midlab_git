@@ -72,8 +72,6 @@ build_push:
 
 scan:
   image: aquasec/trivy:latest
-  tags:  
-    - deploy1
   stage: scan
   script:
     - trivy image --exit-code 0 --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/vote:latest
@@ -93,7 +91,7 @@ deploy:
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
+    # - ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
   script:
     - ssh $DEPLOY_USER@$DEPLOY_HOST "
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD &&
