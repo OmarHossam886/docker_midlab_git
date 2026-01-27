@@ -14,7 +14,7 @@ ARG TARGETARCH
 ARG BUILDPLATFORM
 RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM"
 
-WORKDIR /source
+WORKDIR /docker_midlab/worker
 COPY *.csproj .
 RUN dotnet clean
 RUN dotnet restore -r linux-x64
