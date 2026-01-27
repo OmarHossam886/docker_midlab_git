@@ -4,10 +4,12 @@ services:
   - docker:dind
 
 variables:
+  DOCKER_BUILDKIT: 1
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: ""
   IMAGE_TAG: $CI_COMMIT_SHA
   DOCKER_HOST: tcp://docker:2375
+
 
 stages:
   - deps
