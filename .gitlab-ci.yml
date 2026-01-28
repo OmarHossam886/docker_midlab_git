@@ -72,7 +72,9 @@ build_push:
 
 trivy_scan:
   stage: scan
-  image: aquasec/trivy:latest
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
   services:
     - docker:dind
   tags:
