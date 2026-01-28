@@ -55,7 +55,7 @@ build_push:
   script:
     - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
-    # vote
+    # vote1
     - docker build -t $DOCKERHUB_USERNAME/vote:latest -t $DOCKERHUB_USERNAME/vote:$IMAGE_TAG ./vote
     - docker push $DOCKERHUB_USERNAME/vote:latest
     - docker push $DOCKERHUB_USERNAME/vote:$IMAGE_TAG
