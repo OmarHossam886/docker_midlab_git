@@ -80,6 +80,7 @@ trivy_scan:
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
+    TRIVY_NO_PROGRESS: "true"
   script:
     - trivy image --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/vote:latest
     - trivy image --severity HIGH,CRITICAL $DOCKERHUB_USERNAME/result:latest
