@@ -101,7 +101,7 @@ deploy:
     - ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
   script:
     - ssh $DEPLOY_USER@$DEPLOY_HOST "
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD &&
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin &&
         docker pull $DOCKER_USER/vote:latest &&
         docker pull $DOCKER_USER/result:latest &&
         docker pull $DOCKER_USER/worker:latest &&
