@@ -45,6 +45,8 @@ build:
   only:
     - main
 
+#######W######
+
 build_push:
   stage: push
   image: docker:latest
